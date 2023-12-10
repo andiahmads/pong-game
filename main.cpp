@@ -1,3 +1,4 @@
+#include <cstdlib>
 #include <iostream>
 #include <raylib.h>
 using namespace std;
@@ -81,7 +82,9 @@ public:
   float width, height;
   int speed;
 
-  void Draw() { DrawRectangle(x, y, width, height, white); }
+  void Draw() {
+    DrawRectangleRounded(Rectangle{x, y, width, height}, 0.8, 0, WHITE);
+  }
 
   void Update() {
 
@@ -199,6 +202,8 @@ int main() {
   bool pause = 0;
   int frameCounter = 0;
 
+  const char *username = std::getenv("USER");
+
   while (!WindowShouldClose()) {
     BeginDrawing();
 
@@ -229,16 +234,18 @@ int main() {
       // sebelum mengambar object lain, lakukan clear
       ClearBackground(Dark_Blue);
 
+      DrawCircle(screen_widht / 2, screen_height / 2, 150, LIGHTGRAY);
+
       DrawLine(screen_widht / 2, 0, screen_widht / 2, screen_height, white);
       player.Draw();
       cpu.Draw();
       ball.Draw();
 
       // gambar score
-      DrawText(TextFormat("%i", cpu_score), screen_widht / 4 - 20, 20, 80,
+      DrawText(TextFormat("CPU:%i", cpu_score), screen_widht / 4 - 20, 20, 30,
                white);
-      DrawText(TextFormat("%i", player_score), 3 * screen_widht / 4 - 20, 20,
-               80, white);
+      DrawText(TextFormat("%s:%i", username, player_score),
+               3 * screen_widht / 4 - 20, 20, 30, white);
       // on pause, we draw a blinking message
       DrawText("PRESS SPACE to PAUSE BALL MOVEMENT", 10, GetScreenHeight() - 25,
                20, white);
@@ -247,7 +254,7 @@ int main() {
       frameCounter++;
     if (pause && ((frameCounter / 30) % 2))
       DrawText("PAUSE", screen_widht / 2 - player.height / 2, screen_height / 2,
-               50, white);
+               35, WHITE);
     DrawFPS(10, 10);
 
     EndDrawing();
